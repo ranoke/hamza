@@ -1,3 +1,4 @@
+#define HZ_ENABLE_LOGGING
 #include <hz.h>
 #include <hz-ft.h>
 
@@ -73,14 +74,14 @@ int blit(uint8_t *dst, int dw, int dh, int bpp,
 }
 
 int main(int argc, char *argv[]) {
-    const char *text = "لاَ تَمْشِ فِي الأَرْضِ مَرَحًا إِنَّكَ لَن تَخْرِقَ الأَرْضَ وَلَن تَبْلُغَ الْجِبَالَ طُولاً";
+    const char *text = "English text";
 
     // Load font using FreeType
     FT_Library ft_library;
     FT_Init_FreeType(&ft_library);
 
     FT_Face ft_face;
-    FT_New_Face(ft_library, "../../../data/fonts/UthmanicHafs1 Ver13.ttf", 0, &ft_face);
+    FT_New_Face(ft_library, "/home/ryuu/Documents/dev/hamza2/data/fonts/Roboto-Regular.ttf", 0, &ft_face);
     FT_Set_Char_Size(ft_face, 1000, 0, 0, 0);
 
 
@@ -106,8 +107,8 @@ int main(int argc, char *argv[]) {
 
     hz_context_t *ctx = hz_context_create(font);
     hz_context_set_direction(ctx, HZ_DIRECTION_RTL);
-    hz_context_set_script(ctx, HZ_SCRIPT_ARABIC);
-    hz_context_set_language(ctx, HZ_LANGUAGE_ARABIC);
+    hz_context_set_script(ctx, HZ_SCRIPT_LATIN);
+    hz_context_set_language(ctx, HZ_LANGUAGE_ENGLISH);
     hz_context_set_features(ctx, features);
 
     // Load utf8 string "_zt" stands for zero-terminated
@@ -126,7 +127,7 @@ int main(int argc, char *argv[]) {
         FT_GlyphSlot slot = ft_face->glyph;
         FT_Glyph glyph;
 
-        FT_Load_Glyph(ft_face, node->glyph.id, FT_LOAD_DEFAULT);
+        FT_Load_Glyph(ft_face, node->id/*node->glyph.id*/, FT_LOAD_DEFAULT);
 //        FT_Get_Glyph(slot, &glyph);
         FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL);
 
@@ -134,8 +135,8 @@ int main(int argc, char *argv[]) {
         unsigned int h = slot->bitmap.rows;
         int xb = slot->bitmap_left >> 6;
         int yb = slot->bitmap_top >> 6;
-        int xo = node->glyph.x_offset >> 6;
-        int yo = node->glyph.y_offset >> 6;
+        int xo = node->x_offset >> 6;
+        int yo = node->y_offset >> 6;
 
         uint16_t x0 = xpos + xo + xb;
         uint16_t y0 = ypos + yo + (h - yb);
@@ -159,7 +160,7 @@ int main(int argc, char *argv[]) {
 
 //        FT_Done_Glyph(glyph);
 
-        xpos += node->glyph.x_advance;
+        xpos += node->x_advance;
         node = ctx->dir == HZ_DIRECTION_RTL ? node->prev : node->next;
     }
 

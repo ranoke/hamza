@@ -51,7 +51,7 @@ hz_ft_font_create(FT_Face ft_face) {
     FT_Bytes GPOS_table;
     FT_Bytes JSTF_table;
 
-    if (FT_OpenType_Validate(ft_face, FT_VALIDATE_OT,
+    if (FT_OpenType_Validate(ft_face, FT_VALIDATE_GDEF,
                              &BASE_table, &GDEF_table, &GPOS_table, &GSUB_table, &JSTF_table)
                             != FT_Err_Ok) {
         HZ_ERROR("Failed to validate OpenType tables!");
